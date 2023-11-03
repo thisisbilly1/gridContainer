@@ -1,0 +1,102 @@
+
+
+.ag-theme-balham {
+  --ag-odd-row-background-color: rgba(var(--v-theme-primary), 0.2);
+  --ag-selected-row-background-color: rgba(var(--v-theme-primary), 0.4);
+  --ag-range-selection-border-color: rgba(var(--v-theme-primary), 1);
+  --ag-range-selection-background-color: rgba(var(--v-theme-primary), 0.2);
+  --ag-range-selection-highlight-color: rgba(var(--v-theme-secondary), 0.4);
+  --ag-header-column-separator-display: block;
+  --ag-header-column-separator-width: 1px;
+  --ag-header-column-separator-color: black;
+  // --ag-font-family: 'Roboto';
+
+  .ag-body-horizontal-scroll,
+  .ag-body-horizontal-scroll-viewport,
+  .ag-body-horizontal-scroll-container {
+    padding: 0px;
+    height: 8px !important;
+    min-height: 8px !important;
+  }
+};
+
+// center the top group column headers
+:deep(.ag-header-row-column-group) {
+  .ag-header-group-cell-label {
+    justify-content: center;
+  }
+}
+
+:deep(.ag-grid .ag-root ::-webkit-scrollbar) {
+  width: 8px;
+  height: 8px;
+}
+
+:deep(.ag-grid .ag-root ::-webkit-scrollbar-thumb) {
+  border-radius: 4px;
+  background-color: gray;
+
+  &:hover {
+    background-color: lightgray;
+  }
+}
+
+:deep(.ag-grid .ag-header-cell-label) {
+  overflow: visible;
+}
+
+:deep(.ag-grid .ag-header-icon) {
+  position: absolute;
+  right: 5px;
+  background: white;
+}
+
+:deep(.ag-grid .ag-icon-menu) {
+  position: absolute;
+  right: 18px;
+  top: -8px;
+  background: rgba(var(--v-theme-primary), 0.2),
+}
+
+:deep(.ag-header-cell-label) {
+  width: 100%;
+}
+
+.toolbar_button {
+  padding: 0 4px 8px 0;
+  color: black;
+}
+
+.grid-container {
+  height: 500px;
+  transition: height 0.15s ease-out;
+}
+
+.ag-grid {
+  overflow: show;
+}
+
+:deep(.ag-header-cell-text) {
+  overflow: visible;
+}
+
+:deep(.ag-header) {
+  // since the header can be multi line, we want to avoid it being split in page breaks
+  page-break-inside: avoid;
+}
+
+// center the top group column headers
+:deep(.ag-header-row-column-group) {
+  .ag-header-group-cell-label {
+    justify-content: center;
+  }
+}
+
+.printer-header {
+  color: var(--v-primary-lighten2);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+.grid-container {
+  height: 500px;
+}
