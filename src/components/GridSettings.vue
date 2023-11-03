@@ -2,7 +2,8 @@
   <v-dialog
     v-model="menuOpen"
     max-width="400"
-    :fullscreen="fullscreen"
+    :fullscreen="isFullscreen"
+    :scrim="false"
     close-on-back
     :disabled="!saveRoute"
   >
@@ -180,7 +181,7 @@ export default {
     },
     sortedColumns() {
       return [...this.allColumns].sort((a, b) =>
-        a.headerName.localeCompare(b.headerName),
+        a.headerName?.localeCompare(b.headerName),
       );
     },
     filteredColumns() {
@@ -189,8 +190,8 @@ export default {
         col.headerName.toLowerCase().includes(this.search.toLowerCase()),
       );
     },
-    fullscreen() {
-      return this.$vuetify?.breakpoint?.xs;
+    isFullscreen() {
+      return this.$vuetify?.display?.mobile;
     },
     flattenedColumns() {
       return this.allColumns.flatMap(column => column.children || column);
