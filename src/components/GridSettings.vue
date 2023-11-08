@@ -152,6 +152,15 @@ export default {
     defaultColumns: {
       type: Array,
     },
+    getSettingsProp: {
+      type: Function,
+    },
+    setSettingsProp: {
+      type: Function,
+    },
+    deleteSettingsProp: {
+      type: Function,
+    },
   },
   computed: {
     showLocationNames: {
@@ -220,11 +229,23 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useExampleStore, [
-      "updateSettings",
-      "getSettings",
-      "deleteSettings",
-    ]),
+    ...mapActions(useExampleStore, {
+      updateSettingsDefault: 'updateSettings',
+      getSettingsDefault: 'getSettings',
+      deleteSettingsDefault: 'deleteSettings',
+    }),
+    updateSettings(...args) {
+      if (this.setSettingsProp) return this.setSettingsProp(...args);
+      return this.updateSettingsDefault(...args);
+    },
+    getSettings(...args) {
+      if (this.getSettingsProp) return this.getSettingsProp(...args);
+      return this.getSettingsDefault(...args);
+    },
+    deleteSettings(...args) {
+      if (this.deleteSettingsProp) return this.deleteSettingsProp(...args);
+      return this.deleteSettingsDefault(...args);
+    },
     // eslint-disable-next-line func-names
     onInput: debounce(function(s) {
       this.search = s;

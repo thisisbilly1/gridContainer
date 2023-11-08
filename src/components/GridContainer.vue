@@ -24,6 +24,9 @@
         @save="loadedColumns"
         @reset="resetColumns"
         @updateShowLocationNames="updateShowLocationNames"
+        :getSettingsProp="getSettings"
+        :setSettingsProp="setSettings"
+        :deleteSettingsProp="deleteSettings"
         ref="settings"
       />
       <GridDownload
@@ -164,6 +167,16 @@ export default defineComponent({
     disableGridSettings: {
       type: Boolean,
       default: false,
+    },
+    // passed through to the gridSettings
+    getSettings: {
+      type: Function,
+    },
+    setSettings: {
+      type: Function,
+    },
+    deleteSettings: {
+      type: Function,
     },
   },
   setup(props, { emit }) {
