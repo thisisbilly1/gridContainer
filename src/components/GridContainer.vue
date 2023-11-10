@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, computed, nextTick } from "vue";
+import { defineComponent, ref, toRefs, computed, nextTick, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 import "@ag-grid-community/styles/ag-grid.css";
@@ -265,6 +265,15 @@ export default defineComponent({
         headerHeight + totalHeight + scrollBarHeight + topPinnedRowHeight;
       gridHeight.value = Math.min(500, minHeight);
     }
+
+    watch(data, () => {
+      if (data.value) {
+        gridApi.value.hideOverlay();
+        calcGridHeight();
+      } else {
+        gridApi.value.showLoadingOverlay();
+      }
+    });
 
     async function autoSizeColumns() {
       gridColumnApi.value.autoSizeAllColumns(true);
