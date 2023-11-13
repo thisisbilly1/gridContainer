@@ -3,7 +3,6 @@
     v-bind="$attrs"
     :color="color"
     :variant="variant"
-    @click="$emit('click')"
     class="outer"
     :disabled="disabled"
     >
@@ -11,10 +10,11 @@
     <v-menu bottom right offset-y>
       <template v-slot:activator="{ props }">
         <v-btn
-          v-bind="props"
           class="inner"
-          plain
-          dark
+          :color="color"
+          :variant="variant"
+          @click.stop
+          v-bind="props"
         >
           <v-icon>mdi-menu-down </v-icon>
         </v-btn>
@@ -49,8 +49,8 @@ export default {
 .inner {
   margin-left: 5px;
   padding: 0px 5px;
-  width: 16px !important;
-  min-width: 16px !important;
+  width: 24px !important;
+  min-width: 24px !important;
   border-left: 1px solid white !important;
   border-radius: 0;
 }
