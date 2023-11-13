@@ -58,6 +58,7 @@
           @first-data-rendered="firstDataRendered"
           @expandOrCollapseAll="calcGridHeight"
           @columnMoved="handleColumnChange"
+          v-bind="gridProps"
         />
       </div>
     </div>
@@ -177,6 +178,9 @@ export default defineComponent({
     },
     deleteSettings: {
       type: Function,
+    },
+    gridProps: {
+      type: Object,
     },
   },
   setup(props, { emit }) {
