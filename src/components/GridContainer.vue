@@ -265,15 +265,20 @@ export default defineComponent({
         agGrid.value?.$el?.getElementsByClassName("ag-floating-top")?.[0]
           ?.offsetHeight || 0;
 
+      const bottomPinnedRowHeight =
+        agGrid.value?.$el?.getElementsByClassName("ag-floating-bottom")?.[0]
+          ?.offsetHeight || 0;
+
       const minHeight =
-        headerHeight + totalHeight + scrollBarHeight + topPinnedRowHeight;
+        headerHeight + totalHeight + scrollBarHeight + topPinnedRowHeight + bottomPinnedRowHeight;
       gridHeight.value = Math.min(500, minHeight);
     }
 
-    watch(data, () => {
+    watch(data, async () => {
       if (data.value) {
         gridApi.value.hideOverlay();
-        calcGridHeight();
+        await nextTick();
+        firstDataRendered();
       } else {
         gridApi.value.showLoadingOverlay();
       }
