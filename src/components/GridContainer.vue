@@ -202,7 +202,7 @@ export default defineComponent({
       hideDefaultColumnGroup,
     } = toRefs(props);
 
-    const display = ref(useDisplay());
+    const display = useDisplay();
     const gridOptions = {
       suppressDragLeaveHidesColumns: true,
       suppressColumnVirtualisation: true,
@@ -348,7 +348,21 @@ export default defineComponent({
       return columnDefs.value;
     });
 
-    function unPinColumnsForMobile() {}
+    function unPinColumnsForMobile() {
+      if (display.smAndDown) {
+        const maxPinnedCols = 1;
+        const hasGroupCol = groupedColsFields.value || groupedRowGrandTotal.value
+        const fields = [...pinnedColumns.value];
+        if (hasGroupCol) fields.unshift('ag-Grid-AutoColumn');
+        gridColumnApi.value.applyColumnState({
+          state: fields.map((col, i) => ({
+            colId: col,
+            pinned: i < maxPinnedCols ? true : false,
+          })),
+          defaultState: { pinned: null },
+        });
+      }
+    }
 
     const nonPinnedColumns = computed(() =>
       columnDefs.value.filter((x) => !pinnedColumns.value.includes(x.field) && !groupedColsFields.value?.includes(x.field))
@@ -397,7 +411,7 @@ export default defineComponent({
         });
 
         // add all the pinned columns to the front of the state & always hide grouped columns
-        pinnedColumns.value.reverse().forEach((colId) => {
+        [...pinnedColumns.value].reverse().forEach((colId) => {
           state.unshift({
             colId,
             hide: groupedColsFields.value?.includes(colId) || false,
