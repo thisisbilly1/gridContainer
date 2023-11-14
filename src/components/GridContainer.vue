@@ -202,14 +202,14 @@ export default defineComponent({
       hideDefaultColumnGroup,
     } = toRefs(props);
 
-    const display = useDisplay();
+    const { mobile } = useDisplay();
     const gridOptions = {
       suppressDragLeaveHidesColumns: true,
       suppressColumnVirtualisation: true,
       debounceVerticalScrollbar: true,
       suppressColumnMoveAnimation: true,
-      enableRangeSelection: !display.smAndDown,
-      suppressContextMenu: display.smAndDown,
+      enableRangeSelection: !mobile.value,
+      suppressContextMenu: mobile.value,
       preventDefaultOnContextMenu: true,
       suppressNoRowsOverlay: true,
       suppressPropertyNamesCheck: true,
@@ -349,7 +349,7 @@ export default defineComponent({
     });
 
     function unPinColumnsForMobile() {
-      if (display.smAndDown) {
+      if (mobile.value) {
         const maxPinnedCols = 1;
         const hasGroupCol = groupedColsFields.value || groupedRowGrandTotal.value
         const fields = [...pinnedColumns.value];
