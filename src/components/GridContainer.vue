@@ -49,6 +49,7 @@
           ref="agGrid"
           class="ag-grid ag-theme-balham"
           style="height: 100%; width: 100%"
+          :modules="modules"
           :columnDefs="columnDefsComputed"
           :rowData="rowData"
           :gridOptions="gridOptions"
@@ -72,7 +73,7 @@ import { useDisplay } from "vuetify";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-balham.css";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import { ModuleRegistry } from "@ag-grid-community/core";
+// import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridVue } from "@ag-grid-community/vue3";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -93,15 +94,6 @@ LicenseManager.setLicenseKey(
   "CompanyName=QsrSoft,LicensedApplication=myqsrsoft.com,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=2,LicensedProductionInstancesCount=1,AssetReference=AG-037500,SupportServicesEnd=26_January_2024_[v2]_MTcwNjIyNzIwMDAwMA==9f4ee52279cf0c96bfb717c953e06370"
 );
 
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  RowGroupingModule,
-  RangeSelectionModule,
-  ClipboardModule,
-  MenuModule,
-  ExcelExportModule,
-  CsvExportModule,
-]);
 export default defineComponent({
   name: "GridContainer",
   components: {
@@ -201,6 +193,16 @@ export default defineComponent({
       disableGridSettings,
       hideDefaultColumnGroup,
     } = toRefs(props);
+
+    const modules = [
+      ClientSideRowModelModule,
+      RowGroupingModule,
+      RangeSelectionModule,
+      ClipboardModule,
+      MenuModule,
+      ExcelExportModule,
+      CsvExportModule,
+    ];
 
     const { mobile } = useDisplay();
     const gridOptions = {
@@ -526,6 +528,7 @@ export default defineComponent({
 
     return {
       agGrid,
+      modules,
       columnDefs,
       columnDefsComputed,
       autoGroupColumnDef,
