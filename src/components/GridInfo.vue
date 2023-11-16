@@ -1,65 +1,62 @@
 <template>
-  <div id="gridToolbar" v-if="flattenedColumns.length > 0">
-    <v-icon
-      large
-      @click="menuOpen = true"
-      class="grid-info-button"
-    >
-      mdi-information
-    </v-icon>
-    <v-dialog
-      v-model="menuOpen"
-      max-width="1000"
-      @click:outside="menuOpen = false"
-      :fullscreen="$vuetify.display.xs"
-      scrollable
-    >
-      <v-card class="d-flex flex-column">
-        <v-toolbar
-          color="secondary"
-          dark
-          max-height="64"
-          style="margin-bottom: 10px;"
+  <v-dialog
+    v-model="menuOpen"
+    max-width="1000"
+    @click:outside="menuOpen = false"
+    :fullscreen="$vuetify.display.xs"
+    scrollable
+  >
+    <template v-slot:activator="{ props }">
+      <v-icon
+        v-if="flattenedColumns.length > 0"
+        v-bind="props"
+        @click.stop
+      >
+        mdi-information
+      </v-icon>
+    </template>
+    <v-card class="settings-card">
+      <v-toolbar color="secondary" dark max-height="64">
+        <v-toolbar-title>Column Descriptions</v-toolbar-title>
+        <v-spacer />
+        <v-btn icon dark @click="closeMenu">
+          <v-icon large>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-text-field
+        label="Column"
+        outlined
+        dense
+        v-model="search"
+        prepend-inner-icon="search"
+        clearable
+        class="mt-4"
+        @click:clear="search = ''"
+      />
+      <v-divider></v-divider>
+      <v-card-text>
+        <div class="column-def">
+          <div class="header-name">Column</div>
+          <div class="description">Description</div>
+        </div>
+        <v-virtual-scroll
+          class="columns-list"
+          :items="filteredColumns"
+          item-height="32"
+          v-slot="{ item }"
         >
-          <v-toolbar-title>Column Descriptions</v-toolbar-title>
-          <v-spacer />
-          <v-btn icon dark @click="closeMenu">
-            <v-icon large>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card-text>
-          <v-text-field
-            label="Column"
-            outlined
-            dense
-            v-model="search"
-            prepend-inner-icon="search"
-            clearable
-            class="mt-4"
-            @click:clear="search = ''"
-          />
-          <v-divider></v-divider>
-          <v-table class="overflow-y-auto list-scroll">
-            <thead>
-              <tr>
-                <th>Column</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="col in filteredColumns" :key="col.field">
-                <td>{{ col.headerName }}</td>
-                <td>{{ col.description }}</td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="closeMenu" color="secondary">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+          <div class="column-def">
+            <div class="header-name">{{ item.headerName }}</div>
+            <div class="description">{{ item.description }}</div>
+          </div>
+        </v-virtual-scroll>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn @click="closeMenu" color="secondary">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -127,3 +124,31 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.columns-list {
+  height: min(50vh, 400px);
+  padding: 0px !important;
+  .v-virtual-scroll__item {
+    padding: 0px !important;
+  }
+}
+.settings-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  height: min(80vh, 700px);
+}
+
+.column-def {
+  display: grid;
+  grid-template-columns: 0.25fr 1fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 5px;
+  grid-row-gap: 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 10px 0px;
+}
+
+.header-name { grid-area: 1 / 1 / 2 / 2; }
+.description { grid-area: 1 / 2 / 2 / 3; }
+</style>

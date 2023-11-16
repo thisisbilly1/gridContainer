@@ -3,7 +3,6 @@
     v-model="menuOpen"
     max-width="400"
     :fullscreen="isFullscreen"
-    :scrim="false"
     close-on-back
     :disabled="!saveRoute"
   >
@@ -11,7 +10,6 @@
       <v-icon
         v-if="saveRoute"
         v-bind="props"
-        class="grid-settings-button"
         @click.stop
       >
         mdi-cog
@@ -21,78 +19,51 @@
       <v-toolbar color="secondary" dark max-height="64">
         <v-toolbar-title>Column Settings</v-toolbar-title>
         <v-spacer />
-        <v-btn icon dark @click.prevent="closeMenu">
+        <v-btn icon dark @click="closeMenu">
           <v-icon large>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-card-text class="overflow-y-auto list-scroll pa-0">
-        <div class="columns-top">
-          <v-text-field
-            label="Search"
-            outlined
-            dense
-            v-model="searchComputed"
-            prepend-inner-icon="search"
-            clearable
-            @click:clear="search = ''"
-            hide-details
-          />
-          <v-switch
-            class="ml-3 mr-3"
-            v-model="showLocationNames"
-            label="Show Location Names"
-            hide-details
-          />
-          <v-checkbox
-            :input-value="allColumnsSelected"
-            :indeterminate="!allColumnsSelected && !noColumnsSelected"
-            label="Select All"
-            @change="toggleAll"
-            hide-details
-            class="pl-3 pr-3 pt-0"
-          />
-          <v-divider />
-        </div>
-        <div v-for="col in filteredColumns" :key="col.field">
-          <!-- no children -->
-          <v-checkbox
-            v-if="!col.children"
-            v-model="columnsComputed"
-            :label="col.headerName"
-            :value="col.field"
-            hide-details
-            class="pl-3 pr-3 ma-2"
-          />
-          <!-- yes children -->
-          <template v-else>
-            <v-divider />
-            <v-checkbox
-              :input-value="parentColumnsSelected"
-              @change="changeParent(col)"
-              :value="col.field"
-              :indeterminate="
-                col.children.some(c => columnsComputed.includes(c.field)) &&
-                  !col.children.every(c => columnsComputed.includes(c.field))
-              "
-              :label="col.headerName"
-              hide-details
-              class="pl-3 pr-3 ma-2"
-            />
-            <div class="ml-5">
-              <v-checkbox
-                v-for="child in col.children"
-                :key="child.field"
-                v-model="columnsComputed"
-                :label="child.headerName"
-                :value="child.field"
-                hide-details
-                class="pl-3 pr-3 ma-0"
-              />
-            </div>
-            <v-divider />
-          </template>
-        </div>
-      </v-card-text>
+      <div class="columns-top">
+        <v-text-field
+          label="Search"
+          outlined
+          dense
+          v-model="searchComputed"
+          prepend-inner-icon="search"
+          clearable
+          @click:clear="search = ''"
+          hide-details
+        />
+        <v-switch
+          class="ml-3 mr-3"
+          v-model="showLocationNames"
+          label="Show Location Names"
+          hide-details
+        />
+        <v-checkbox
+          :input-value="allColumnsSelected"
+          :indeterminate="!allColumnsSelected && !noColumnsSelected"
+          label="Select All"
+          @change="toggleAll"
+          hide-details
+          class="pl-3 pr-3 pt-0"
+        />
+        <v-divider />
+      </div>
+      <v-virtual-scroll
+        class="columns-list"
+        :items="filteredColumns"
+        item-height="100"
+        v-slot="{ item }"
+      >
+        <v-checkbox
+          v-model="columnsComputed"
+          :label="item.headerName"
+          :value="item.field"
+          hide-details
+          class="pl-3 pr-3 ma-2"
+        />
+      </v-virtual-scroll>
       <v-divider></v-divider>
       <v-card-actions>
         <v-btn @click.stop="closeMenu" color="secondary" variant="tonal">
@@ -354,17 +325,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.grid-settings-button {
-  font-size: 1.5em;
-  color: black;
+.columns-list {
+  height: min(50vh, 400px);
+  padding: 0px !important;
 }
 
 .settings-card {
-  height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
-  max-height: min(80vh, 700px);
+  height: min(80vh, 700px);
 }
 .columns-top {
   background: white;
