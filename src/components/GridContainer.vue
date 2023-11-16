@@ -117,6 +117,10 @@ export default defineComponent({
     data: {
       type: Array,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     disableAutoHeight: {
       type: Boolean,
       default: false,
@@ -181,6 +185,7 @@ export default defineComponent({
       defaultShowColumns,
       columnDefs,
       data,
+      loading,
       disableAutoHeight,
       pinnedColumns,
       groupedRowGrandTotal,
@@ -276,16 +281,6 @@ export default defineComponent({
       gridHeight.value = Math.min(500, minHeight);
     }
 
-    watch(data, async () => {
-      if (data.value) {
-        gridApi.value.hideOverlay();
-        await nextTick();
-        firstDataRendered();
-      } else {
-        gridApi.value.showLoadingOverlay();
-      }
-    });
-
     async function autoSizeColumns() {
       gridColumnApi.value.autoSizeAllColumns(true);
     }
@@ -335,6 +330,16 @@ export default defineComponent({
         },
       };
     }
+
+    watch(loading, async () => {
+      if (loading.value) {
+        if (gridApi.value) gridApi.value.showLoadingOverlay();
+      } else {
+        await nextTick();
+        firstDataRendered();
+      }
+    });
+
     const columnDefsComputed = computed(() => {
       if (groupedRowGrandTotal.value) {
         return [
