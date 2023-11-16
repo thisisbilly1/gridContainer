@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="menuOpen"
-    max-width="400"
+    :max-width="isFullscreen ? null : 400"
     :fullscreen="isFullscreen"
     close-on-back
     :disabled="!saveRoute"
@@ -171,7 +171,7 @@ export default {
       );
     },
     isFullscreen() {
-      return this.$vuetify?.display?.mobile;
+      return this.$vuetify?.display?.xs;
     },
     flattenedColumns() {
       return this.allColumns.flatMap(column => column.children || column);

@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="menuOpen"
-    max-width="1000"
+    :max-width="$vuetify.display.xs ? null : 1000"
     @click:outside="menuOpen = false"
     :fullscreen="$vuetify.display.xs"
     scrollable
@@ -126,7 +126,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .columns-list {
-  height: min(50vh, 400px);
+  height: min(60vh, 600px);
   padding: 0px !important;
   .v-virtual-scroll__item {
     padding: 0px !important;
