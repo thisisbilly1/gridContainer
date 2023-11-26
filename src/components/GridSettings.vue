@@ -94,8 +94,6 @@
 </template>
 
 <script>
-import { useExampleStore } from "../stores/exampleStore";
-import { mapActions } from "pinia";
 import debounce from 'lodash.debounce';
 
 export default {
@@ -106,6 +104,8 @@ export default {
       loading: false,
       search: null,
       showLocNames: true,
+      // used when setting functions are not passed in
+      defaultSettings: {},
     };
   },
   props: {
@@ -200,11 +200,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useExampleStore, {
-      updateSettingsDefault: 'updateSettings',
-      getSettingsDefault: 'getSettings',
-      deleteSettingsDefault: 'deleteSettings',
-    }),
+    updateSettingsDefault({ name, settingName, value }) {
+      this.defaultSettings[`${name}/${settingName}`] = value;
+      localStorage.setItem('exampleSave', JSON.stringify(this.defaultSettings));
+    },
+    getSettingsDefault({ name, settingName }) {
+      return this.defaultSettings?.[`${name}/${settingName}`]
+    },
+    deleteSettingsDefault({ name, settingName, value }) {
+      delete this.settings[`${name}/${settingName}`]
+      localStorage.setItem('exampleSave', JSON.stringify(this.defaultSettings));
+    },
     updateSettings(...args) {
       if (this.setSettingsProp) return this.setSettingsProp(...args);
       return this.updateSettingsDefault(...args);
