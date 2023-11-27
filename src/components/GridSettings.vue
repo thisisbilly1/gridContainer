@@ -270,7 +270,7 @@ export default {
         settingName: 'locationNames',
       });
       if (defaultColumns) this.columnsComputed = defaultColumns;
-      // else this.columnsComputed = [...this.defaultColumnsComputed];
+      else this.columnsComputed = [...this.defaultColumnsComputed];
 
       if (userDefaultLoc !== null) this.showLocationNames = userDefaultLoc;
       else this.showLocationNames = true;

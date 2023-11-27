@@ -220,6 +220,7 @@ const defaultColDef = {
   sortable: true,
   filter: true,
   resizable: true,
+  hide: true,
   wrapHeaderText: true,
   autoHeaderHeight: true,
   menuTabs: ["filterMenuTab"],
