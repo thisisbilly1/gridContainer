@@ -323,6 +323,7 @@ watch(loading, async () => {
   } else {
     await nextTick();
     unPinColumnsForMobile();
+    showPinnedColumns();
     autoSizeColumns();
     calcGridHeight();
   }
@@ -363,12 +364,35 @@ const nonPinnedColumns = computed(() =>
   columnDefs.value.filter((x) => !pinnedColumns.value.includes(x.field) && !groupedColsFields.value?.includes(x.field))
 );
 
+function showPinnedColumns() {
+  if (!gridColumnApi.value) return;
+  const state = [];
+  // add all the pinned columns to the front of the state & always hide grouped columns
+  [...pinnedColumns.value].reverse().forEach((colId) => {
+    state.unshift({
+      colId,
+      hide: groupedColsFields.value?.includes(colId) || false,
+    });
+  });
+
+  // unshift the grouping column
+  if (autoGroupColumnDef.value) {
+    state.unshift({
+      colId: autoGroupColumnDef.value.field,
+      pinned: "left",
+      hide: false,
+    });
+  }
+  gridColumnApi.value.applyColumnState({
+    state,
+  });
+}
+
 const shownColumnsComputed = computed({
   get() {
     return shownColumns.value;
   },
   set(shownCols) {
-    console.log('shownCols', shownCols);
     shownColumns.value = shownCols;
 
     const gridColumns = gridColumnApi.value
@@ -407,22 +431,7 @@ const shownColumnsComputed = computed({
       };
     });
 
-    // add all the pinned columns to the front of the state & always hide grouped columns
-    [...pinnedColumns.value].reverse().forEach((colId) => {
-      state.unshift({
-        colId,
-        hide: groupedColsFields.value?.includes(colId) || false,
-      });
-    });
-
-    // unshift the grouping column
-    if (autoGroupColumnDef.value) {
-      state.unshift({
-        colId: autoGroupColumnDef.value.field,
-        pinned: "left",
-        hide: false,
-      });
-    }
+    showPinnedColumns();
 
     // apply the state to the grid
     gridColumnApi.value.applyColumnState({
