@@ -317,18 +317,6 @@ function groupRows() {
   };
 }
 
-watch(loading, async () => {
-  if (loading.value) {
-    if (gridApi.value) gridApi.value.showLoadingOverlay();
-  } else {
-    await nextTick();
-    unPinColumnsForMobile();
-    showPinnedColumns();
-    autoSizeColumns();
-    calcGridHeight();
-  }
-});
-
 const columnDefsComputed = computed(() => {
   if (groupedRowGrandTotal.value) {
     return [
@@ -439,6 +427,18 @@ const shownColumnsComputed = computed({
       applyOrder: true,
     });
   },
+});
+
+watch(loading, async () => {
+  if (loading.value) {
+    if (gridApi.value) gridApi.value.showLoadingOverlay();
+  } else {
+    await nextTick();
+    unPinColumnsForMobile();
+    shownColumnsComputed.value = [...shownColumnsComputed.value];
+    autoSizeColumns();
+    calcGridHeight();
+  }
 });
 
 async function onGridReady(params) {
