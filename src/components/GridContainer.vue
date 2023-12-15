@@ -15,7 +15,7 @@
         :extraColumnDescriptions="extraColumnDescriptions"
       />
       <GridSettings
-        v-if="gridColumnApi && !disableGridSettings && settingsName"
+        v-if="gridApi && !disableGridSettings && settingsName"
         :allColumns="nonPinnedColumns"
         :saveRoute="settingsName"
         :defaultColumns="defaultShowColumns"
@@ -38,7 +38,7 @@
     </template>
     <div class="outer-grid-container">
       <ColumnGroups
-        v-if="columnGroups && gridColumnApi"
+        v-if="columnGroups && gridApi"
         :columnGroups="columnGroups"
         :defaultColumns="defaultColumns"
         :hideDefaultColumnGroup="hideDefaultColumnGroup"
@@ -91,8 +91,18 @@ import GridInfo from './GridInfo.vue';
 
 // set ag grid licenseKey key
 LicenseManager.setLicenseKey(
-  "CompanyName=QsrSoft,LicensedApplication=myqsrsoft.com,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=2,LicensedProductionInstancesCount=1,AssetReference=AG-037500,SupportServicesEnd=26_January_2024_[v2]_MTcwNjIyNzIwMDAwMA==9f4ee52279cf0c96bfb717c953e06370"
+  'CompanyName=QsrSoft,LicensedApplication=myqsrsoft.com,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=2,LicensedProductionInstancesCount=1,AssetReference=AG-037500,SupportServicesEnd=26_January_2024_[v2]_MTcwNjIyNzIwMDAwMA==9f4ee52279cf0c96bfb717c953e06370',
 );
+
+const modules = [
+  ClientSideRowModelModule,
+  RowGroupingModule,
+  RangeSelectionModule,
+  ClipboardModule,
+  MenuModule,
+  ExcelExportModule,
+  CsvExportModule,
+];
 
 const emit = defineEmits(["onGridReady", "firstDataRendered"]);
 
@@ -190,16 +200,6 @@ const {
   hideDefaultColumnGroup,
 } = toRefs(props);
 
-const modules = [
-  ClientSideRowModelModule,
-  RowGroupingModule,
-  RangeSelectionModule,
-  ClipboardModule,
-  MenuModule,
-  ExcelExportModule,
-  CsvExportModule,
-];
-
 const { mobile } = useDisplay();
 const gridOptions = {
   suppressDragLeaveHidesColumns: true,
@@ -230,13 +230,12 @@ const defaultColDef = {
   },
 };
 
-const agGrid = ref(null);
+const agGrid = ref();
 const shownColumns = ref([]);
 const expanded = ref(true);
-const gridColumnApi = ref(null);
-const gridApi = ref(null);
+const gridApi = ref();
 const defaultColumns = ref([]);
-const autoGroupColumnDef = ref(null);
+const autoGroupColumnDef = ref();
 
 const gridHeight = ref(500);
 const gridStyle = computed(() => {
@@ -274,7 +273,7 @@ async function calcGridHeight() {
 }
 
 async function autoSizeColumns() {
-  gridColumnApi.value.autoSizeAllColumns(true);
+  gridApi.value.autoSizeAllColumns(true);
 }
 
 function groupRows() {
@@ -285,7 +284,7 @@ function groupRows() {
 
   if (!groupColFields.length) return;
 
-  gridColumnApi.value.applyColumnState({
+  gridApi.value.applyColumnState({
     state: groupColFields.map((colId) => ({
       colId,
       rowGroup: true,
@@ -338,7 +337,7 @@ function unPinColumnsForMobile() {
     const hasGroupCol = groupedColsFields.value || groupedRowGrandTotal.value
     const fields = [...pinnedColumns.value];
     if (hasGroupCol) fields.unshift('ag-Grid-AutoColumn');
-    gridColumnApi.value.applyColumnState({
+    gridApi.value.applyColumnState({
       state: fields.map((col, i) => ({
         colId: col,
         pinned: i < maxPinnedCols ? true : false,
@@ -353,7 +352,7 @@ const nonPinnedColumns = computed(() =>
 );
 
 function showPinnedColumns() {
-  if (!gridColumnApi.value) return;
+  if (!gridApi.value) return;
   const state = [];
   // add all the pinned columns to the front of the state & always hide grouped columns
   [...pinnedColumns.value].reverse().forEach((colId) => {
@@ -371,7 +370,7 @@ function showPinnedColumns() {
       hide: false,
     });
   }
-  gridColumnApi.value.applyColumnState({
+  gridApi.value.applyColumnState({
     state,
   });
 }
@@ -383,16 +382,15 @@ const shownColumnsComputed = computed({
   set(shownCols) {
     shownColumns.value = shownCols;
 
-    const gridColumns = gridColumnApi.value
-      .getAllGridColumns()
-      .filter((x) => !pinnedColumns.value.includes(x.colId));
+    // const gridColumns = gridApi.value
+    //   .getAllGridColumns()
+    //   .filter((x) => !pinnedColumns.value.includes(x.colId));
+    
 
     // group the shown cols by their parent
     const childrenGroupedShownCols = shownCols.reduce((cols, col) => {
-      const column = gridColumns.find((x) => x.colId === col);
-      const children = column?.originalParent?.children?.map(
-        (x) => x.colId
-      );
+      const column = columnDefs.value.find((x) => x.colId === col);
+      const children = column?.children?.map(x => x.field);
       if (children) {
         const sortedChildren = children.sort(
           (a, b) => shownCols.indexOf(a) - shownCols.indexOf(b)
@@ -402,19 +400,18 @@ const shownColumnsComputed = computed({
       return cols;
     }, []);
 
-    gridColumns.sort(
-      (a, b) =>
-        childrenGroupedShownCols.indexOf(a.colId) -
-        childrenGroupedShownCols.indexOf(b.colId)
+    const sorted = columnDefs.value.toSorted((a, b) =>
+      childrenGroupedShownCols.indexOf(a.field) -
+      childrenGroupedShownCols.indexOf(b.field)
     );
     // create hide/show state for each column
-    const state = gridColumns.map((col) => {
-      let hide = !shownCols.includes(col.colId);
+    const state = sorted.map((col) => {
+      let hide = !shownCols.includes(col.field);
       if (groupedColsFields.value) {
-        if (groupedColsFields.value.includes(col.colId)) hide = true;
+        if (groupedColsFields.value.includes(col.field)) hide = true;
       }
       return {
-        colId: col.colId,
+        colId: col.field,
         hide,
       };
     });
@@ -422,7 +419,7 @@ const shownColumnsComputed = computed({
     showPinnedColumns();
 
     // apply the state to the grid
-    gridColumnApi.value.applyColumnState({
+    gridApi.value.applyColumnState({
       state,
       applyOrder: true,
     });
@@ -441,8 +438,7 @@ watch(loading, async () => {
   }
 });
 
-async function onGridReady(params) {
-  gridColumnApi.value = params.columnApi;
+function onGridReady(params) {
   gridApi.value = params.api;
   groupRows();
 
@@ -531,7 +527,7 @@ async function updateShowLocationNames(value) {
 const settings = ref(null);
 function handleColumnChange({ finished, source }) {
   if (!finished || source !== 'uiColumnMoved') return;
-  const columns = gridColumnApi.value
+  const columns = gridApi.value
     .getAllDisplayedColumns()
     .map((x) => x.colId);
   shownColumns.value = columns;
