@@ -351,30 +351,6 @@ const nonPinnedColumns = computed(() =>
   columnDefs.value.filter((x) => !pinnedColumns.value.includes(x.field) && !groupedColsFields.value?.includes(x.field))
 );
 
-function showPinnedColumns() {
-  if (!gridApi.value) return;
-  const state = [];
-  // add all the pinned columns to the front of the state & always hide grouped columns
-  [...pinnedColumns.value].reverse().forEach((colId) => {
-    state.unshift({
-      colId,
-      hide: groupedColsFields.value?.includes(colId) || false,
-    });
-  });
-
-  // unshift the grouping column
-  if (autoGroupColumnDef.value) {
-    state.unshift({
-      colId: autoGroupColumnDef.value.field,
-      pinned: "left",
-      hide: false,
-    });
-  }
-  gridApi.value.applyColumnState({
-    state,
-  });
-}
-
 const shownColumnsComputed = computed({
   get() {
     return shownColumns.value;
@@ -382,14 +358,9 @@ const shownColumnsComputed = computed({
   set(shownCols) {
     shownColumns.value = shownCols;
 
-    // const gridColumns = gridApi.value
-    //   .getAllGridColumns()
-    //   .filter((x) => !pinnedColumns.value.includes(x.colId));
-    
-
     // group the shown cols by their parent
     const childrenGroupedShownCols = shownCols.reduce((cols, col) => {
-      const column = columnDefs.value.find((x) => x.colId === col);
+      const column = nonPinnedColumns.value.find((x) => x.colId === col);
       const children = column?.children?.map(x => x.field);
       if (children) {
         const sortedChildren = children.sort(
@@ -400,7 +371,7 @@ const shownColumnsComputed = computed({
       return cols;
     }, []);
 
-    const sorted = columnDefs.value.toSorted((a, b) =>
+    const sorted = nonPinnedColumns.value.toSorted((a, b) =>
       childrenGroupedShownCols.indexOf(a.field) -
       childrenGroupedShownCols.indexOf(b.field)
     );
@@ -416,7 +387,24 @@ const shownColumnsComputed = computed({
       };
     });
 
-    showPinnedColumns();
+    // showPinnedColumns();
+
+    // add all the pinned columns to the front of the state & always hide grouped columns
+    [...pinnedColumns.value].reverse().forEach((colId) => {
+      state.unshift({
+        colId,
+        hide: groupedColsFields.value?.includes(colId) || false,
+      });
+    });
+
+    // unshift the grouping column
+    if (autoGroupColumnDef.value) {
+      state.unshift({
+        colId: autoGroupColumnDef.value.field,
+        pinned: "left",
+        hide: false,
+      });
+    }
 
     // apply the state to the grid
     gridApi.value.applyColumnState({

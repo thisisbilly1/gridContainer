@@ -80,6 +80,7 @@ export const locationColumn = columnText({
   field: 'storeNum',
   headerName: 'Loc',
   pinned: 'left',
+  sort: 'asc',
   comparator: numericComparator,
   valueGetter({ data, context }) {
     const showLocationNames = context?.showLocationNames;
