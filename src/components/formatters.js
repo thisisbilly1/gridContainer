@@ -1,4 +1,4 @@
-const MISSING_VALUE = 'N/A';
+const MISSING_VALUE = '';
 
 function isFinite(val) {
   return !(
@@ -47,7 +47,7 @@ export function percentFormatter(value, decimals = 2) {
 
 export function currencyFormatter(value, decimals = 0) {
   let newVal = value?.toString ? value.toString() : value;
-  if (newVal == null) return MISSING_VALUE;
+  if (newVal == null || newVal === '') return MISSING_VALUE;
   const formatVal = Intl.NumberFormat('en-us', {
     style: 'currency',
     currency: 'USD',
