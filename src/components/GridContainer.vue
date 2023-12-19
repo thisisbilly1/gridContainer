@@ -59,6 +59,7 @@
           @first-data-rendered="firstDataRendered"
           @expandOrCollapseAll="calcGridHeight"
           @columnMoved="handleColumnChange"
+          @columnVisible="columnVisible"
           v-bind="gridProps"
         />
       </div>
@@ -525,6 +526,13 @@ function handleColumnChange({ finished, source }) {
 
 function changeColumnGroup({ columns }) {
   shownColumnsComputed.value = columns;
+}
+
+// auto size columns
+function columnVisible({ columns }) {
+  if (!columns?.length) return;
+  const shownCols = columns.filter(x => x.visible);
+  gridApi.value.autoSizeColumns(shownCols, true);
 }
 </script>
 
