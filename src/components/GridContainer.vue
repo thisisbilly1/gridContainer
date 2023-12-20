@@ -533,6 +533,7 @@ function columnVisible({ columns }) {
   if (!columns?.length) return;
   const shownCols = columns.filter(x => x.visible);
   gridApi.value.autoSizeColumns(shownCols, true);
+  calcGridHeight();
 }
 </script>
 
