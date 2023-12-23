@@ -420,11 +420,17 @@ watch(loading, async () => {
     if (gridApi.value) gridApi.value.showLoadingOverlay();
   } else {
     await nextTick();
-    unPinColumnsForMobile();
-    shownColumnsComputed.value = [...shownColumnsComputed.value];
     autoSizeColumns();
     calcGridHeight();
   }
+});
+
+watch(columnDefs, async () => {
+  if (!gridApi.value) return;
+  await nextTick();
+  groupRows();
+  unPinColumnsForMobile();
+  shownColumnsComputed.value = [...shownColumnsComputed.value];
 });
 
 function onGridReady(params) {
