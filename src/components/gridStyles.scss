@@ -1,6 +1,13 @@
-
+// @import "vuetify/lib/styles/settings/_variables.scss";
 
 .ag-theme-balham {
+  --ag-data-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  --ag-header-foreground-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  --ag-foreground-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  --ag-secondary-foreground-color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+  --ag-background-color: transparent;
+  --ag-header-background-color: transparent;
+  --ag-row-hover-color: rgba(var(--v-theme-secondary), 1);
   --ag-odd-row-background-color: rgba(var(--v-theme-primary), 0.2);
   --ag-selected-row-background-color: rgba(var(--v-theme-primary), 0.4);
   --ag-range-selection-border-color: rgba(var(--v-theme-primary), 1);

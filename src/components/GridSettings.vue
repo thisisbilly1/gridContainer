@@ -344,7 +344,6 @@ export default {
   height: min(80vh, 700px);
 }
 .columns-top {
-  background: white;
   position: sticky;
   top: 0px;
   z-index: 1;

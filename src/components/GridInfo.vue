@@ -126,7 +126,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .columns-list {
-  height: min(60vh, 600px);
+  height: min(41vh, 600px);
   padding: 0px !important;
   .v-virtual-scroll__item {
     padding: 0px !important;
