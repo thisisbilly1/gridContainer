@@ -4,16 +4,17 @@
     :max-width="isFullscreen ? null : 400"
     :fullscreen="isFullscreen"
     close-on-back
-    :disabled="!saveRoute"
+    :disabled="disabledComputed"
   >
     <template v-slot:activator="{ props }">
-      <v-icon
-        v-if="saveRoute"
+      <v-btn
         v-bind="props"
-        @click.stop
-      >
-        mdi-cog
-      </v-icon>
+        v-if="saveRoute"
+        variant="text"
+        @click="menuOpen = !menuOpen"
+        :disabled="disabledComputed"
+        icon="mdi-cog"
+      />
     </template>
     <v-card class="settings-card">
       <v-toolbar color="secondary" dark max-height="64">
@@ -132,6 +133,10 @@ export default {
     deleteSettingsProp: {
       type: Function,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     showLocationNames: {
@@ -198,6 +203,9 @@ export default {
     defaultColumnsComputed() {
       return this.defaultColumns || this.allColumns.map(c => c.field);
     },
+    disabledComputed() {
+      return !this.saveRoute || this.disabled;
+    }
   },
   methods: {
     updateSettingsDefault({ name, settingName, value }) {

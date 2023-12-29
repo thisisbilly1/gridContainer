@@ -27,6 +27,7 @@
         :getSettingsProp="getSettings"
         :setSettingsProp="setSettings"
         :deleteSettingsProp="deleteSettings"
+        :disabled="!isCurrentColumnGroupDefault"
         ref="settings"
       />
       <GridDownload
@@ -520,7 +521,9 @@ async function updateShowLocationNames(value) {
 }
 
 const settings = ref(null);
+const isCurrentColumnGroupDefault = ref(true);
 function handleColumnChange({ finished, source }) {
+  if (!isCurrentColumnGroupDefault.value) return;
   if (!finished || source !== 'uiColumnMoved') return;
   const columns = gridApi.value
     .getAllDisplayedColumns()
@@ -530,8 +533,9 @@ function handleColumnChange({ finished, source }) {
   settings.value?.save(columns);
 }
 
-function changeColumnGroup({ columns }) {
+function changeColumnGroup({ columns, isDefault }) {
   shownColumnsComputed.value = columns;
+  isCurrentColumnGroupDefault.value = !!isDefault;
 }
 
 // auto size columns

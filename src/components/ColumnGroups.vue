@@ -35,6 +35,7 @@ export default {
     allOptions() {
       const defaultFilter = {
         name: 'default',
+        isDefault: true,
         columns: this.defaultColumns,
       };
       return this.hideDefaultColumnGroup
