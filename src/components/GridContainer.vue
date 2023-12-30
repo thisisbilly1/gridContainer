@@ -240,7 +240,6 @@ const defaultColDef = {
 
 const agGrid = ref();
 const shownColumns = ref([]);
-console.log('initialExpanded', initialExpanded.value)
 const expanded = ref(initialExpanded.value);
 const gridApi = ref();
 const defaultColumns = ref([]);
