@@ -26,10 +26,6 @@
 export default {
   name: 'GridExpand',
   props: {
-    openedAtStart: {
-      type: Boolean,
-      default: true,
-    },
     title: {
       type: String,
     },
@@ -45,9 +41,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  created() {
-    this.expanded = this.openedAtStart;
   },
   methods: {
     expand() {

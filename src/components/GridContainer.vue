@@ -181,6 +181,10 @@ const props = defineProps({
   gridProps: {
     type: Object,
   },
+  initialExpanded: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const {
@@ -200,6 +204,8 @@ const {
   settingsName,
   disableGridSettings,
   hideDefaultColumnGroup,
+  gridProps,
+  initialExpanded,
 } = toRefs(props);
 
 const { mobile } = useDisplay();
@@ -234,7 +240,8 @@ const defaultColDef = {
 
 const agGrid = ref();
 const shownColumns = ref([]);
-const expanded = ref(true);
+console.log('initialExpanded', initialExpanded.value)
+const expanded = ref(initialExpanded.value);
 const gridApi = ref();
 const defaultColumns = ref([]);
 const autoGroupColumnDef = ref();
