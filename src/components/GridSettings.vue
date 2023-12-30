@@ -11,7 +11,6 @@
         v-bind="props"
         v-if="saveRoute"
         variant="text"
-        @click="menuOpen = !menuOpen"
         :disabled="disabledComputed"
         icon="mdi-cog"
       />
