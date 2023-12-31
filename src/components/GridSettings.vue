@@ -69,8 +69,8 @@
         <template v-else>
           <v-divider />
           <v-checkbox
-            :input-value="parentColumnsSelected"
-            @change="changeParent(col)"
+            :model-value="parentColumnsSelected"
+            @update:modelValue="changeParent(item)"
             :value="item.field"
             :indeterminate="
               item.children.some((c) => columnsComputed.includes(c.field)) &&
