@@ -366,36 +366,43 @@ const shownColumnsComputed = computed({
   set(shownCols) {
     shownColumns.value = shownCols;
 
+    const gridColumns = gridApi.value
+      .getAllGridColumns()
+      .filter((x) =>
+        !pinnedColumns.value.includes(x.colId) &&
+        !groupedColsFields.value?.includes(x.colId)
+      );
     // group the shown cols by their parent
     const childrenGroupedShownCols = shownCols.reduce((cols, col) => {
-      const column = nonPinnedColumns.value.find((x) => x.colId === col);
-      const children = column?.children?.map(x => x.field);
+      const column = gridColumns.find((x) => x.colId === col);
+      const children = column?.originalParent?.children?.map(
+        (x) => x.colId,
+      );
       if (children) {
         const sortedChildren = children.sort(
-          (a, b) => shownCols.indexOf(a) - shownCols.indexOf(b)
+          (a, b) => shownCols.indexOf(a) - shownCols.indexOf(b),
         );
         cols.push(...sortedChildren);
       } else cols.push(col);
       return cols;
     }, []);
 
-    const sorted = nonPinnedColumns.value.toSorted((a, b) =>
-      childrenGroupedShownCols.indexOf(a.field) -
-      childrenGroupedShownCols.indexOf(b.field)
+
+    gridColumns.sort((a, b) =>
+      childrenGroupedShownCols.indexOf(a.colId) -
+      childrenGroupedShownCols.indexOf(b.colId)
     );
     // create hide/show state for each column
-    const state = sorted.map((col) => {
-      let hide = !shownCols.includes(col.field);
+    const state = gridColumns.map((col) => {
+      let hide = !shownCols.includes(col.colId);
       if (groupedColsFields.value) {
-        if (groupedColsFields.value.includes(col.field)) hide = true;
+        if (groupedColsFields.value.includes(col.colId)) hide = true;
       }
       return {
-        colId: col.field,
+        colId: col.colId,
         hide,
       };
     });
-
-    // showPinnedColumns();
 
     // add all the pinned columns to the front of the state & always hide grouped columns
     [...pinnedColumns.value].reverse().forEach((colId) => {

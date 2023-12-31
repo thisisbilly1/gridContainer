@@ -56,13 +56,43 @@
         item-height="100"
         v-slot="{ item }"
       >
+        <!-- no children -->
         <v-checkbox
+          v-if="!item.children"
           v-model="columnsComputed"
           :label="item.headerName"
           :value="item.field"
           hide-details
           class="pl-3 pr-3 ma-2"
         />
+        <!-- has children -->
+        <template v-else>
+          <v-divider />
+          <v-checkbox
+            :input-value="parentColumnsSelected"
+            @change="changeParent(col)"
+            :value="item.field"
+            :indeterminate="
+              item.children.some((c) => columnsComputed.includes(c.field)) &&
+              !item.children.every((c) => columnsComputed.includes(c.field))
+            "
+            :label="item.headerName"
+            hide-details
+            class="pl-3 pr-3 ma-2"
+          />
+          <div class="ml-5">
+            <v-checkbox
+              v-for="child in item.children"
+              :key="child.field"
+              v-model="columnsComputed"
+              :label="child.headerName"
+              :value="child.field"
+              hide-details
+              class="pl-3 pr-3 ma-0"
+            />
+          </div>
+          <v-divider />
+        </template>
       </v-virtual-scroll>
       <v-divider></v-divider>
       <v-card-actions>
