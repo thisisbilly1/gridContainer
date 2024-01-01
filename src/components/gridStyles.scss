@@ -15,7 +15,7 @@
   --ag-range-selection-highlight-color: rgba(var(--v-theme-secondary), 0.4);
   --ag-header-column-separator-display: block;
   --ag-header-column-separator-width: 1px;
-  --ag-header-column-separator-color: black;
+  --ag-header-column-separator-color: rgb(var(--v-theme-on-surface));
   // --ag-font-family: 'Roboto';
 
   .ag-body-horizontal-scroll,
