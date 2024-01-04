@@ -61,6 +61,7 @@
           @expandOrCollapseAll="calcGridHeight"
           @columnMoved="handleColumnChange"
           @columnVisible="columnVisible"
+          @rowGroupOpened="calcGridHeight"
           v-bind="gridProps"
         />
       </div>
