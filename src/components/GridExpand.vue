@@ -86,6 +86,6 @@ $mobile-breakpoint: map-get($display-breakpoints, "sm-and-down");
 .grid-expand-button {
   padding: 0;
   font-size: medium;
-  color: rgb(var(--v-theme-secondary));
+  color: rgb(var(--v-theme-primary));
 }
 </style>
