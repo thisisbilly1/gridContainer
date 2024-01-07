@@ -63,6 +63,7 @@
           @columnMoved="handleColumnChange"
           @columnVisible="columnVisible"
           @rowGroupOpened="calcGridHeight"
+          @filterChanged="calcGridHeight"
           v-bind="gridProps"
         />
       </div>
