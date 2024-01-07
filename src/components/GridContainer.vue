@@ -9,6 +9,7 @@
       <slot name="header" />
     </template>
     <template v-slot:headerRight>
+      <slot name="header-right" />
       <GridInfo
         v-if="!disableInfoBtn"
         :columnDefs="columnDefs"

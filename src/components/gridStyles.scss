@@ -57,7 +57,7 @@
 :deep(.ag-grid .ag-header-icon) {
   position: absolute;
   right: 5px;
-  background: white;
+  background: rgb(var(--v-theme-background));
 }
 
 :deep(.ag-grid .ag-icon-menu) {
@@ -69,11 +69,6 @@
 
 :deep(.ag-header-cell-label) {
   width: 100%;
-}
-
-.toolbar_button {
-  padding: 0 4px 8px 0;
-  color: black;
 }
 
 .grid-container {
