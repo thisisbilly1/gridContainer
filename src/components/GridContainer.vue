@@ -38,6 +38,9 @@
         :columnGroups="columnGroups"
       />
     </template>
+    <template v-slot:header-bottom>
+      <slot name="header-bottom" />
+    </template>
     <div class="outer-grid-container">
       <ColumnGroups
         v-if="columnGroups && gridApi"

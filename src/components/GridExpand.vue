@@ -11,23 +11,20 @@
           {{ title }}
           <v-icon>{{ expanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
-        <slot name="header" v-if="!shouldPlaceExtraHeaderContentBelow"/>
+        <slot name="header" />
       </div>
       <span v-else class="header-left">{{ title }}</span>
       <div class="header-right">
         <slot name="headerRight" />
       </div>
     </v-card-title>
-    <slot name="header" v-if="shouldPlaceExtraHeaderContentBelow"/>
+    <slot name="header-bottom" />
     <slot />
   </v-card>
 </template>
 
 <script setup>
 import { toRefs, computed } from 'vue';
-import { useDisplay } from "vuetify";
-
-const { mobile } = useDisplay();
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
@@ -70,11 +67,6 @@ const expanded = computed({
 function expand() {
   expanded.value = !expanded.value;
 }
-
-const shouldPlaceExtraHeaderContentBelow = computed(() => {
-  return mobile.value && title.value;
-});
-
 </script>
 
 <style lang="scss" scoped>
@@ -90,8 +82,6 @@ $mobile-breakpoint: map-get($display-breakpoints, "sm-and-down");
     display: flex;
     align-items: center;
     gap: 5px;
-  }
-  .header-left {
     flex-wrap: wrap;
   }
 }
