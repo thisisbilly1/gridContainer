@@ -460,7 +460,7 @@ watch(columnDefs, async () => {
     }
     defaultColumns.value = columnDefs.value.flatMap(getChildren);
     // defaultColumns.value = nonPinnedColumns.value.flatMap((x) => x.field);
-  } else defaultColumns.value = [...defaultShowColumns.value];
+  } else defaultColumns.value = [...(defaultColumns.value || defaultShowColumns.value)];
   shownColumnsComputed.value = [...defaultColumns.value];
 });
 
