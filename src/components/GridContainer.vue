@@ -306,7 +306,7 @@ function groupRows() {
   });
   // make the group col header name the name of the col that we are grouping by if only 1
   let column;
-  if (groupedColsFields.value?.length === 1 && !groupedRowGrandTotal.value) {
+  if (groupedColsFields.value?.length === 1) {
     column = columnDefs.value.find(
       (col) => col.field === groupedColsFields.value[0]
     );
