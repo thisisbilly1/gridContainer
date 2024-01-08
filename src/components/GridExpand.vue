@@ -11,61 +11,70 @@
           {{ title }}
           <v-icon>{{ expanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
-        <slot name="header" />
+        <slot name="header" v-if="!shouldPlaceExtraHeaderContentBelow"/>
       </div>
       <span v-else class="header-left">{{ title }}</span>
       <div class="header-right">
         <slot name="headerRight" />
       </div>
     </v-card-title>
+    <slot name="header" v-if="shouldPlaceExtraHeaderContentBelow"/>
     <slot />
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'GridExpand',
-  props: {
-    title: {
-      type: String,
-    },
-    modelValue: {
-      type: Boolean,
-      default: true,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    disableExpand: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+import { toRefs, computed } from 'vue';
+import { useDisplay } from "vuetify";
+
+const { mobile } = useDisplay();
+
+const emit = defineEmits(['update:modelValue']);
+const props = defineProps({
+  title: {
+    type: String,
   },
-  methods: {
-    expand() {
-      this.expanded = !this.expanded;
-    },
+  modelValue: {
+    type: Boolean,
+    default: true,
   },
-  computed: {
-    headerStyle() {
-      if (!this.disableExpand) {
-        return {
-          cursor: 'pointer',
-        };
-      }
-      return {};
-    },
-    expanded: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        if (!this.disableExpand) this.$emit('update:modelValue', value);
-      },
-    },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
-};
+  disableExpand: {
+    type: Boolean,
+    default: false,
+  },
+});
+const { title, modelValue, disabled, disableExpand } = toRefs(props);
+
+const headerStyle = computed(() => {
+  if (!disableExpand.value) {
+    return {
+      cursor: 'pointer',
+    };
+  }
+  return {};
+});
+
+const expanded = computed({
+  get() {
+    return modelValue.value;
+  },
+  set(value) {
+    if (!disableExpand.value) emit('update:modelValue', value);
+  },
+});
+
+function expand() {
+  expanded.value = !expanded.value;
+}
+
+const shouldPlaceExtraHeaderContentBelow = computed(() => {
+  return mobile.value && title.value;
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -73,7 +82,7 @@ export default {
 $mobile-breakpoint: map-get($display-breakpoints, "sm-and-down");
 .grid-title {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 
@@ -81,6 +90,9 @@ $mobile-breakpoint: map-get($display-breakpoints, "sm-and-down");
     display: flex;
     align-items: center;
     gap: 5px;
+  }
+  .header-left {
+    flex-wrap: wrap;
   }
 }
 .grid-expand-button {
