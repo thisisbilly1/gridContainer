@@ -285,6 +285,7 @@ async function calcGridHeight() {
 }
 
 async function autoSizeColumns() {
+  if (!gridApi.value) return;
   gridApi.value.autoSizeAllColumns(true);
 }
 
@@ -448,7 +449,16 @@ watch(columnDefs, async () => {
   await nextTick();
   groupRows();
   unPinColumnsForMobile();
-  shownColumnsComputed.value = [...shownColumnsComputed.value];
+  // if no default columns, then assume everything
+  if (!defaultShowColumns.value) {
+    function getChildren(col) {
+      if (!col.children) return [col.field];
+      return col.children.flatMap(getChildren);
+    }
+    defaultColumns.value = columnDefs.value.flatMap(getChildren);
+    // defaultColumns.value = nonPinnedColumns.value.flatMap((x) => x.field);
+  } else defaultColumns.value = [...defaultShowColumns.value];
+  shownColumnsComputed.value = [...defaultColumns.value];
 });
 
 function onGridReady(params) {
